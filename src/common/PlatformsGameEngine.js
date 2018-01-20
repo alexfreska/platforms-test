@@ -102,9 +102,6 @@ class PlatformsGameEngine extends GameEngine {
     const platform3 = new Platform(++this.world.idCount, this, -2, 2)
 
     this.physicsEngine.world.on('postStep', () => {
-      platform1.physicsObj.velocity[0] = 2 * Math.sin(this.time)
-      platform2.physicsObj.velocity[0] = 2 * Math.sin(this.time)
-      platform3.physicsObj.velocity[0] = 2 * Math.sin(this.time)
     })
 
     this.addObjectToWorld(floor)
