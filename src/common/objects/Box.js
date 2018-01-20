@@ -1,66 +1,68 @@
-'use strict';
+const DynamicObject = require('lance-gg').serialize.DynamicObject
+const TwoVector = require('lance-gg').serialize.TwoVector
 
-const Serializer = require('lance-gg').serialize.Serializer;
-const DynamicObject = require('lance-gg').serialize.DynamicObject;
-const TwoVector = require('lance-gg').serialize.TwoVector;
-
-let P2 = null;
+let P2 = null
 
 class Box extends DynamicObject {
+  constructor(id, gameEngine, x, y) {
+    super(id, new TwoVector(x, y))
+    this.class = Box
+    this.gameEngine = gameEngine
 
-    constructor(id, gameEngine, x, y) {
-        super(id, new TwoVector(x, y));
-        this.class = Box;
-        this.gameEngine = gameEngine;
+    this.width = 0.8
+    this.height = 0.8
+    this.color = 'red'
+  }
 
-        this.width = 0.8;
-        this.height = 0.8;
-        this.color = 'red';
-    };
+  get bendingMultiple() {
+    return 0.8
+  }
 
-    get bendingMultiple() { return 0.8; }
-    get velocityBendingMultiple() { return 0; }
+  get velocityBendingMultiple() {
+    return 0
+  }
 
-    onAddToWorld(gameEngine) {
+  onAddToWorld(gameEngine) {
+    console.log(`SPRITE ADD TO WORLD ${super.toString()}`)
+    P2 = gameEngine.physicsEngine.P2
+    this.gameEngine = gameEngine
+    const { width, height } = this
 
-        console.log(`SPRITE ADD TO WORLD ${super.toString()}`);
+    const boxShape = new gameEngine.physicsEngine.P2.Box({
+      width,
+      height,
+    })
 
-        P2 = gameEngine.physicsEngine.P2;
+    const boxBody = this.physicsObj = new gameEngine.physicsEngine.P2.Body({
+      mass: 1,
+      angle: 0,
+      position:[this.position.x, this.position.y]
+    })
 
-        this.gameEngine = gameEngine;
+    boxShape.material = gameEngine.materials.box
+    boxBody.addShape(boxShape)
 
-        let boxMaterial = this.gameEngine.materials.boxMaterial;
-        let boxShape = new this.gameEngine.physicsEngine.P2.Box({ width: this.width, height: this.height });
-        let boxBody = this.physicsObj = new this.gameEngine.physicsEngine.P2.Body({
-            mass: 1,
-            angle: 0,
-            position:[this.position.x, this.position.y]
-        });
-        boxShape.material = boxMaterial;
-        boxBody.addShape(boxShape);
+    gameEngine.physicsEngine.world.addBody(boxBody)
 
-        this.gameEngine.physicsEngine.world.addBody(boxBody);
+    this.scene = gameEngine.renderer ?
+      gameEngine.renderer.scene : null
+  }
 
-        let scene = this.scene = gameEngine.renderer ? gameEngine.renderer.scene : null;
-        if (scene) {
+  // update obj
+  refreshFromPhysics() {
+    const { position, velocity, angle } = this.physicsObj
+    this.position.set(position[0], position[1])
+    this.velocity.set(velocity[0], velocity[1])
+    this.angle = angle
+  }
 
-        }
-    }
-
-    // update position, quaternion, and velocity from new physical state.
-    refreshFromPhysics() {
-        this.position.set(this.physicsObj.position[0], this.physicsObj.position[1]);
-        this.velocity.set(this.physicsObj.velocity[0], this.physicsObj.velocity[1]);
-        this.angle = this.physicsObj.angle;
-    }
-
-    // update position, quaternion, and velocity from new physical state.
-    refreshToPhysics() {
-        this.physicsObj.position = [this.position.x, this.position.y];
-        this.physicsObj.velocity = [this.velocity.x, this.velocity.y];
-        this.physicsObj.angle = this.angle;
-    }
-
+  // update physicsObj
+  refreshToPhysics() {
+    const { position, velocity, angle } = this
+    this.physicsObj.position = [position.x, position.y]
+    this.physicsObj.velocity = [velocity.x, velocity.y]
+    this.physicsObj.angle = this.angle
+  }
 }
 
-module.exports = Box;
+module.exports = Box

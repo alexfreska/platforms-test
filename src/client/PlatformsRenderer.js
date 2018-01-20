@@ -1,9 +1,4 @@
-'use strict';
-
-const Renderer = require('lance-gg').render.Renderer;
-const Utils= require('./../common/Utils');
-
-const Char = require('./../common/objects/Char');
+const Renderer = require('lance-gg').render.Renderer
 
 class PlatformsRenderer extends Renderer {
 
