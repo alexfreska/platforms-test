@@ -18,26 +18,6 @@ class Platform extends DynamicObject {
         this.color = 'green';
     };
 
-    get bendingMultiple() { return 0.8; }
-    get velocityBendingMultiple() { return 0; }
-
-    /*static get netScheme() {
-        return Object.assign({
-            //showThrust: { type: Serializer.TYPES.INT32 }
-        }, super.netScheme);
-    }
-
-    toString() {
-        return `Platform::${super.toString()}`;
-    }
-
-    //get bendingAngleLocalMultiple() { return 0.0; }
-
-    syncTo(other) {
-        super.syncTo(other);
-        //this.showThrust = other.showThrust;
-    }*/
-
     onAddToWorld(gameEngine) {
 
         console.log(`SPRITE ADD TO WORLD ${super.toString()}`);
@@ -60,10 +40,20 @@ class Platform extends DynamicObject {
 
         this.gameEngine.physicsEngine.world.addBody(platformBody);
 
-        let scene = this.scene = gameEngine.renderer ? gameEngine.renderer.scene : null;
-        if (scene) {
+    }
 
-        }
+    syncTo(other, options){
+        super.syncTo(other);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
+    }
+
+    bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements) {
+        super.bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
     }
 
     // update position, quaternion, and velocity from new physical state.
@@ -79,7 +69,6 @@ class Platform extends DynamicObject {
         this.physicsObj.velocity = [this.velocity.x, this.velocity.y];
         this.physicsObj.angle = this.angle;
     }
-
 }
 
 module.exports = Platform;

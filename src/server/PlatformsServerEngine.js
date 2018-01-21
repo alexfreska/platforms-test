@@ -7,10 +7,10 @@ class PlatformsServerEngine extends ServerEngine {
     constructor(io, gameEngine, inputOptions) {
         super(io, gameEngine, inputOptions);
 
-        this.serializer.registerClass(require('../common/objects/Box'));
-        this.serializer.registerClass(require('../common/objects/Char'));
-        this.serializer.registerClass(require('../common/objects/Floor'));
-        this.serializer.registerClass(require('../common/objects/Platform'));
+        this.serializer.registerClass(require('./../common/objects/Box'));
+        this.serializer.registerClass(require('./../common/objects/Char'));
+        this.serializer.registerClass(require('./../common/objects/Floor'));
+        this.serializer.registerClass(require('./../common/objects/Platform'));
     }
 
     start() {

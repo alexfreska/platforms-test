@@ -24,14 +24,14 @@ class PlatformsRenderer extends Renderer {
     }
 
     drawBox(object){
-        let body = object.physicsObj;
+        let body = object.physicsObj || object;
         this.ctx.fillStyle = object.color;
         this.ctx.beginPath();
         /*var x = body.position[0],
             y = body.position[1],
             s = body.shapes[0];*/
-        var x = object.position.x,
-            y = object.position.y,
+        var x = object.position.x, // body.position[0], //.x || object.position_x,
+            y = object.position.y, // body.position[1], //.y || object.position_y,
             w = object.width,
             h = object.height;
         this.ctx.save();

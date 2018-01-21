@@ -33,8 +33,6 @@ class Char extends DynamicObject {
 
     onAddToWorld(gameEngine) {
 
-        console.log(`SPRITE ADD TO WORLD ${super.toString()}`);
-
         P2 = gameEngine.physicsEngine.P2;
 
         this.gameEngine = gameEngine;
@@ -55,15 +53,24 @@ class Char extends DynamicObject {
 
         this.gameEngine.physicsEngine.world.addBody(characterBody);
 
-        let scene = this.scene = gameEngine.renderer ? gameEngine.renderer.scene : null;
-        if (scene) {
-
-        }
     }
 
     destroy() {
-        console.log('CHARACTER DESTROYED');
         this.gameEngine.physicsEngine.removeObject(this.physicsObj);
+    }
+
+    syncTo(other, options){
+        super.syncTo(other);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
+    }
+
+    bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements) {
+        super.bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
     }
 
     // update position, quaternion, and velocity from new physical state.
@@ -79,6 +86,7 @@ class Char extends DynamicObject {
         this.physicsObj.velocity = [this.velocity.x, this.velocity.y];
         this.physicsObj.angle = this.angle;
     }
+
 }
 
 module.exports = Char;

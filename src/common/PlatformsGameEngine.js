@@ -6,6 +6,7 @@ const Char = require('./objects/Char');
 const Floor = require('./objects/Floor');
 const Platform = require('./objects/Platform');
 const TwoVector = require('lance-gg').serialize.TwoVector;
+const Serializable = require('lance-gg').serialize.Serializable;
 
 let P2 = null;
 
@@ -72,14 +73,7 @@ class PlatformsGameEngine extends GameEngine {
         this.physicsEngine.world.addContactMaterial(boxGroundCM);
 
         this.on('server__init', this.gameInit.bind(this));
-        //this.on('client__syncReceived', this.clientSync.bind(this));
     }
-
-    /*clientSync(sync, syncEvents, maxStepCount) {
-        console.log(sync);
-        console.log(syncEvents);
-        console.log(maxStepCount);
-    }*/
 
     gameInit() {
 
@@ -97,6 +91,10 @@ class PlatformsGameEngine extends GameEngine {
             platform1.physicsObj.velocity[0] = 2*Math.sin(this.time);
             platform2.physicsObj.velocity[0] = 2*Math.sin(this.time);
             platform3.physicsObj.velocity[0] = 2*Math.sin(this.time);
+
+            platform1.refreshFromPhysics();
+            platform2.refreshFromPhysics();
+            platform3.refreshFromPhysics();
         });
 
         this.addObjectToWorld(floor);
@@ -119,26 +117,14 @@ class PlatformsGameEngine extends GameEngine {
     step(isReenact) {
         super.step(isReenact);
 
-        let walkSpeed = 2
-
         this.world.forEachObject((id, o) => {
 
-            let physicsObj = o.physicsObj;
-
-            if(o.class == Char){
-                if(o.moving == 'right'){
-                    physicsObj.velocity[0] = walkSpeed;
-                    delete o.moving;
-                }else if(o.moving == 'left'){
-                    physicsObj.velocity[0] = -walkSpeed;
-                    delete o.moving;
-                }else{
-                    physicsObj.velocity[0] = 0;
-                }
+            // remove velocity for all moved Char's
+            if(o.class == Char && o.physicsObj.velocity[0] != 0){
+                o.physicsObj.velocity[0] = 0
+                o.refreshFromPhysics();
             }
 
-            o.position.set(physicsObj.position[0], physicsObj.position[1]);
-            o.velocity.set(physicsObj.velocity[0], physicsObj.velocity[1]);
         });
     }
 
@@ -164,13 +150,19 @@ class PlatformsGameEngine extends GameEngine {
         let char = this.world.getPlayerObject(playerId);
 
         if (char) {
+            // this condition allow multiples jumps keeping the jump button pressed
+            // if you want the P2 example jump, needs handle when up stops and allow jump just when toggle to up
             if (inputData.input == 'up' && char.canJump()) {
                 char.physicsObj.velocity[1] = jumpSpeed;
             }
 
             if (inputData.input == 'right' || inputData.input == 'left') {
-                char.moving = inputData.input;
+                // to keep P2 example functionallity we apply velocity for a single step
+                // we set it here , and remove them after super.step is processed
+                char.physicsObj.velocity[0] = inputData.input == 'right' ? walkSpeed : -walkSpeed;
             }
+
+            char.refreshFromPhysics();
         }
     };
 

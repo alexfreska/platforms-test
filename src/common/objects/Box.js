@@ -18,9 +18,6 @@ class Box extends DynamicObject {
         this.color = 'red';
     };
 
-    get bendingMultiple() { return 0.8; }
-    get velocityBendingMultiple() { return 0; }
-
     onAddToWorld(gameEngine) {
 
         console.log(`SPRITE ADD TO WORLD ${super.toString()}`);
@@ -33,18 +30,37 @@ class Box extends DynamicObject {
         let boxShape = new this.gameEngine.physicsEngine.P2.Box({ width: this.width, height: this.height });
         let boxBody = this.physicsObj = new this.gameEngine.physicsEngine.P2.Body({
             mass: 1,
-            angle: 0,
+            angle: this.angle,
             position:[this.position.x, this.position.y]
         });
         boxShape.material = boxMaterial;
         boxBody.addShape(boxShape);
 
+        let boxBody = this.physicsObj = new this.gameEngine.physicsEngine.addBox({
+            width: this.width,
+            height: this.height,
+            angle: this.angle,
+            mass: 1,
+            material: boxMaterial,
+            position: [this.position.x, this.position.y]
+        });
+
         this.gameEngine.physicsEngine.world.addBody(boxBody);
 
-        let scene = this.scene = gameEngine.renderer ? gameEngine.renderer.scene : null;
-        if (scene) {
+    }
 
-        }
+    syncTo(other, options){
+        super.syncTo(other);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
+    }
+
+    bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements) {
+        super.bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
     }
 
     // update position, quaternion, and velocity from new physical state.

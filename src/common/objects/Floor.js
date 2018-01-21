@@ -41,10 +41,20 @@ class Floor extends DynamicObject {
 
         this.gameEngine.physicsEngine.world.addBody(floorBody);
 
-        let scene = this.scene = gameEngine.renderer ? gameEngine.renderer.scene : null;
-        if (scene) {
+    }
 
-        }
+    syncTo(other, options){
+        super.syncTo(other);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
+    }
+
+    bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements) {
+        super.bendToCurrent(original, bending, worldSettings, isLocal, bendingIncrements);
+
+        if (this.physicsObj)
+            this.refreshToPhysics();
     }
 
     // update position, quaternion, and velocity from new physical state.

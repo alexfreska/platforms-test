@@ -1,7 +1,7 @@
 const qsOptions = require('query-string').parse(location.search);
 const PlatformsClientEngine = require('../client/PlatformsClientEngine');
 const PlatformsGameEngine = require('../common/PlatformsGameEngine');
-const P2PhysicsEngine = require('../utils/P2PhysicsEngine');
+const P2PhysicsEngine = require('../new-code/P2PhysicsEngine');
 const p2 = require('p2');
 
 // default options, overwritten by query-string options
@@ -12,8 +12,9 @@ const defaults = {
     clientIDSpace: 1000000,
     syncOptions: {
         sync: qsOptions.sync || 'extrapolate',
-        localObjBending: 1,
-        remoteObjBending: 1
+        localObjBending: 0.6,
+        remoteObjBending: 0.8,
+        bendingIncrements: 6
     }
 };
 let options = Object.assign(defaults, qsOptions);

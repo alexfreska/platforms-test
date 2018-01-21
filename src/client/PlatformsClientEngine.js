@@ -6,13 +6,15 @@ const KeyboardControls = require('../client/KeyboardControls');
 const Utils = require('./../common/Utils');
 
 class PlatformsClientEngine extends ClientEngine {
+
     constructor(gameEngine, options) {
         super(gameEngine, options, PlatformsRenderer);
 
-        this.serializer.registerClass(require('../common/objects/Box'));
-        this.serializer.registerClass(require('../common/objects/Char'));
-        this.serializer.registerClass(require('../common/objects/Floor'));
-        this.serializer.registerClass(require('../common/objects/Platform'));
+        //this.serializer.registerClass(require('./../utils/BindedP2TwoVector'));
+        this.serializer.registerClass(require('./../common/objects/Box'));
+        this.serializer.registerClass(require('./../common/objects/Char'));
+        this.serializer.registerClass(require('./../common/objects/Floor'));
+        this.serializer.registerClass(require('./../common/objects/Platform'));
 
         this.gameEngine.on('client__preStep', this.preStep.bind(this));
     }
@@ -35,7 +37,6 @@ class PlatformsClientEngine extends ClientEngine {
 
             this.socket.on('disconnect', (e) => {
                 console.log('disconnected');
-
             });
 
 

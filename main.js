@@ -17,7 +17,7 @@ const io = socketIO(requestHandler);
 // Game Server
 const PlatformsServerEngine = require(path.join(__dirname, 'src/server/PlatformsServerEngine.js'));
 const PlatformsGameEngine = require(path.join(__dirname, 'src/common/PlatformsGameEngine.js'));
-const P2PhysicsEngine = require(path.join(__dirname, 'src/utils/P2PhysicsEngine'));
+const P2PhysicsEngine = require(path.join(__dirname, 'src/new-code/P2PhysicsEngine'));
 
 // Game Instances
 const physicsEngine = new P2PhysicsEngine();
