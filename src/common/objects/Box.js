@@ -22,28 +22,26 @@ class Box extends DynamicObject {
 
         console.log(`SPRITE ADD TO WORLD ${super.toString()}`);
 
-        P2 = gameEngine.physicsEngine.P2;
+        P2 = gameEngine.physicsEngine.P2
+        this.gameEngine = gameEngine
+        let boxMaterial = gameEngine.materials.boxMaterial
+        const { width, height, angle, position } = this
 
-        this.gameEngine = gameEngine;
+        let boxShape = new gameEngine.physicsEngine.P2.Box({
+          width,
+          height
+        })
 
-        let boxMaterial = this.gameEngine.materials.boxMaterial;
-        let boxShape = new this.gameEngine.physicsEngine.P2.Box({ width: this.width, height: this.height });
-        let boxBody = this.physicsObj = new this.gameEngine.physicsEngine.P2.Body({
-            mass: 1,
-            angle: this.angle,
-            position:[this.position.x, this.position.y]
-        });
-        boxShape.material = boxMaterial;
-        boxBody.addShape(boxShape);
+        let boxBody = new gameEngine.physicsEngine.P2.Body({
+          mass: 1,
+          angle,
+          position:[position.x, position.y]
+        })
 
-        let boxBody = this.physicsObj = new this.gameEngine.physicsEngine.addBox({
-            width: this.width,
-            height: this.height,
-            angle: this.angle,
-            mass: 1,
-            material: boxMaterial,
-            position: [this.position.x, this.position.y]
-        });
+        this.physicsObj = boxBody
+
+        boxShape.material = boxMaterial
+        boxBody.addShape(boxShape)
 
         this.gameEngine.physicsEngine.world.addBody(boxBody);
 

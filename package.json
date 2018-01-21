@@ -1,9 +1,6 @@
 {
   "name": "platforms",
   "version": "1.0.0",
-  "engines": {
-    "node": "6.11.1"
-  },
   "description": "Testing 2D physics on Lance-GG",
   "main": "main.js",
   "dependencies": {
